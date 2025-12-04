@@ -17,8 +17,9 @@ FROM node:20-alpine AS production
 WORKDIR /app
 
 # Copy package.json and install only production dependencies
+# --ignore-scripts prevents postinstall from running (which needs dev dependencies)
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 # Copy compiled app from builder
 COPY --from=builder /app/dist ./dist
