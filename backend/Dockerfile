@@ -1,39 +1,33 @@
-# Backend Dockerfile
+# Stage 1: Build
 FROM node:20-alpine AS builder
-
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY tsconfig*.json ./
-COPY nest-cli.json ./
-
-# Install dependencies
+# Copy package files and install all dependencies
+COPY package*.json tsconfig*.json nest-cli.json ./
 RUN npm ci
 
-# Copy source code
+# Copy all source code
 COPY . .
 
-# Build the application
+# Build NestJS app (creates dist/main.js)
 RUN npm run build
 
-# Production stage
+# Stage 2: Production
 FROM node:20-alpine AS production
-
 WORKDIR /app
 
-# Copy package files
+# Copy package.json and install only production dependencies
 COPY package*.json ./
+RUN npm ci --omit=dev
 
-# Install only production dependencies
-RUN npm ci --only=production
-
-# Copy built application from builder
+# Copy compiled app from builder
 COPY --from=builder /app/dist ./dist
+
+# Optional: copy static files if your app uses them
+# COPY --from=builder /app/public ./public
 
 # Expose port
 EXPOSE 3000
 
-# Start the application
+# Start the app
 CMD ["node", "dist/main.js"]
-
