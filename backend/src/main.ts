@@ -8,8 +8,15 @@ async function bootstrap() {
 
   app.use(cookieParser());
   // Enable CORS
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost',
+    'http://frontend:80',
+  ];
+
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: allowedOrigins,
     credentials: true,
   });
 
