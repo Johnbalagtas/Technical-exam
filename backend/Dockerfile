@@ -12,6 +12,10 @@ COPY . .
 # Build NestJS app (creates dist/main.js)
 RUN npm run build
 
+# Verify build succeeded
+RUN ls -la dist/ || (echo "Build failed: dist folder not found" && exit 1)
+RUN test -f dist/main.js || (echo "Build failed: dist/main.js not found" && exit 1)
+
 # Stage 2: Production
 FROM node:20-alpine AS production
 WORKDIR /app
