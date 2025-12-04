@@ -14,7 +14,7 @@ RUN npm run build
 
 # Verify build succeeded
 RUN ls -la dist/ || (echo "Build failed: dist folder not found" && exit 1)
-RUN test -f dist/main.js || (echo "Build failed: dist/main.js not found" && exit 1)
+RUN test -f dist/src/main.js || (echo "Build failed: dist/src/main.js not found" && exit 1)
 
 # Stage 2: Production
 FROM node:20-alpine AS production
@@ -35,4 +35,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 
 # Start the app
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]
